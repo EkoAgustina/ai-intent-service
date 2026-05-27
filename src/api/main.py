@@ -9,7 +9,7 @@ MODEL_DIR = None
 MAX_LENGTH = 128
 
 if sys.platform == "linux":
-    MODEL_DIR = "/home/aceeko/project/tesis/distilbert-model/model/distilbert-banking77"
+    MODEL_DIR = "/home/aceeko/project/tesis/distilbert-model/distilbert-banking77"
 elif sys.platform == "darwin":
     MODEL_DIR = "model/distilbert-banking77"
 
