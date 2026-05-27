@@ -1,0 +1,20 @@
+{
+    "dataset": "Banking77",
+    "total_data": 13083,
+    "total_intent": 77,
+    "split_ratio": {
+        "training": "70%",
+        "validation": "15%",
+        "test": "15%"
+    },
+    "training_data": 9158,
+    "validation_data": 1962,
+    "test_suite_data": 1963,
+    "test_case_schema": [
+        "test_id",
+        "input_request",
+        "expected_label_id",
+        "expected_label_name"
+    ],
+    "test_suite_file": "banking77_test_suite.csv"
+}
