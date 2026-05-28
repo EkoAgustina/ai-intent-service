@@ -1,6 +1,6 @@
 APP_NAME = ai-intent-service
 PORT = 7000
-NETWORK_NAME = tunel
+NETWORK_NAME = tunnel
 
 # The main command to deploy whenever there is a code change
 deploy: build run
