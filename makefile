@@ -1,5 +1,6 @@
 APP_NAME = ai-intent-service
 PORT = 7000
+NETWORK_NAME = tunel
 
 # The main command to deploy whenever there is a code change
 deploy: build run
@@ -13,6 +14,7 @@ run:
 	docker rm -f $(APP_NAME) || true
 	docker run -d \
 		--name $(APP_NAME) \
+		--network $(NETWORK_NAME) \
 		-p $(PORT):$(PORT) \
 		-v "$$(pwd)/model:/app/model" \
 		$(APP_NAME)
