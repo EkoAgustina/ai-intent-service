@@ -1,0 +1,10 @@
+venv/
+__pycache__/
+src/api/__pycache__
+*.pyc
+.git/
+.gitignore
+.DS_Store
+data/
+model/
+*.ipynb
