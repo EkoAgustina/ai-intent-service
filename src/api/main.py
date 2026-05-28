@@ -38,22 +38,6 @@ model.eval()
 
 print(f"Model loaded on device: {device}")
 
-
-@app.get("/")
-def root():
-    return {
-        "message": "Banking77 Intent Classification API is running.",
-        "model": "DistilBERT fine-tuned on Banking77"
-    }
-
-
-@app.get("/health")
-def health_check():
-    return {
-        "status": "healthy"
-    }
-
-
 @app.post("/predict", response_model=PredictionResponse)
 def predict(request: PredictionRequest):
     start_time = time.time()
