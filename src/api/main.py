@@ -5,13 +5,8 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 
-MODEL_DIR = None
+MODEL_DIR = "model/distilbert-banking77"
 MAX_LENGTH = 128
-
-if sys.platform == "linux":
-    MODEL_DIR = "/home/aceeko/project/tesis/distilbert-model/distilbert-banking77"
-elif sys.platform == "darwin":
-    MODEL_DIR = "model/distilbert-banking77"
 
 app = FastAPI(
     title="Banking77 Intent Classification API",
