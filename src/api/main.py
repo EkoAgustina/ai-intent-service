@@ -23,7 +23,6 @@ class PredictionResponse(BaseModel):
     input_text: str
     predicted_label_id: int
     predicted_label_name: str
-    response_time: float
 
 
 print("Loading model and tokenizer...")
@@ -60,11 +59,8 @@ def predict(request: PredictionRequest):
     predicted_label_id = predicted_label_id.item()
     predicted_label_name = model.config.id2label[predicted_label_id]
 
-    response_time = (time.time() - start_time) * 1000
-
     return {
         "input_text": request.text,
         "predicted_label_id": predicted_label_id,
         "predicted_label_name": predicted_label_name,
-        "response_time": response_time
     }
