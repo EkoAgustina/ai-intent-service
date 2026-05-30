@@ -1,9 +1,9 @@
 import time
 import torch
-import sys
 from fastapi import FastAPI
 from pydantic import BaseModel
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
+
 
 MODEL_DIR = "model/distilbert-banking77"
 MAX_LENGTH = 128
@@ -23,7 +23,6 @@ class PredictionResponse(BaseModel):
     input_text: str
     predicted_label_id: int
     predicted_label_name: str
-    confidence_score: float
     response_time: float
 
 
@@ -37,6 +36,7 @@ model.to(device)
 model.eval()
 
 print(f"Model loaded on device: {device}")
+
 
 @app.post("/predict", response_model=PredictionResponse)
 def predict(request: PredictionRequest):
@@ -55,11 +55,9 @@ def predict(request: PredictionRequest):
     with torch.no_grad():
         outputs = model(**inputs)
         logits = outputs.logits
-        probabilities = torch.softmax(logits, dim=-1)
-        confidence_score, predicted_label_id = torch.max(probabilities, dim=-1)
+        predicted_label_id = torch.argmax(logits, dim=-1)
 
     predicted_label_id = predicted_label_id.item()
-    confidence_score = confidence_score.item()
     predicted_label_name = model.config.id2label[predicted_label_id]
 
     response_time = time.time() - start_time
@@ -68,6 +66,5 @@ def predict(request: PredictionRequest):
         "input_text": request.text,
         "predicted_label_id": predicted_label_id,
         "predicted_label_name": predicted_label_name,
-        "confidence_score": confidence_score,
         "response_time": response_time
     }
