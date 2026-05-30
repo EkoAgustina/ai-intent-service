@@ -60,7 +60,7 @@ def predict(request: PredictionRequest):
     predicted_label_id = predicted_label_id.item()
     predicted_label_name = model.config.id2label[predicted_label_id]
 
-    response_time = time.time() - start_time
+    response_time = (time.time() - start_time) * 1000
 
     return {
         "input_text": request.text,
