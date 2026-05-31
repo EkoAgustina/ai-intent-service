@@ -46,6 +46,9 @@ model.to(device)
 model.eval()
 
 print(f"Model loaded on device: {device}")
+print(f"Number of threads: {torch.get_num_threads()}")
+print(f"Number of interop threads: {torch.get_num_interop_threads()}")
+print(f"Tokenizer type: {type(tokenizer)}")
 
 @app.middleware("http")
 async def log_requests(request, call_next):
