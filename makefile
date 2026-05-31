@@ -17,8 +17,12 @@ run:
 		--network $(NETWORK_NAME) \
 		-p $(PORT):$(PORT) \
 		-v "$$(pwd)/model:/app/model" \
+		--cpus="2.0" \
+		--memory="2g" \
+		--memory-swap="2g" \
 		$(APP_NAME)
 	@echo "==> Success! Application is running on port $(PORT)"
+
 
 logs:
 	docker logs -f $(APP_NAME)
