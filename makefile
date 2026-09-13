@@ -1,4 +1,4 @@
-APP_NAME = ai-intent-service
+APP_NAME = ai-intent-service-distilbert
 PORT = 7000
 NETWORK_NAME = tunnel
 
