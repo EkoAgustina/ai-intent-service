@@ -6,7 +6,7 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import logging
 import time
 from datetime import datetime, UTC
-from hooks import parse_args
+from src.hooks import parse_args
 
 args = parse_args()
 
