@@ -43,6 +43,7 @@ docker-build-distilbert:
 	@echo "==> Building DistilBERT Docker image..."
 	docker build \
 		--build-arg MODEL_DIR=$(MODEL_DIR_DISTILBERT) \
+		--build-arg APP_PORT=$(PORT_DISTILBERT) \
 		-t $(APP_NAME_DISTILBERT) \
 		.
 
@@ -50,6 +51,7 @@ docker-build-albert:
 	@echo "==> Building ALBERT Docker image..."
 	docker build \
 		--build-arg MODEL_DIR=$(MODEL_DIR_ALBERT) \
+		--build-arg APP_PORT=$(PORT_ALBERT) \
 		-t $(APP_NAME_ALBERT) \
 		.
 

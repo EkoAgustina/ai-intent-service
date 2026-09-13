@@ -15,6 +15,9 @@ COPY src ./src
 ARG MODEL_DIR
 ENV MODEL_DIR=${MODEL_DIR}
 
-EXPOSE 7000
+ARG APP_PORT
+ENV APP_PORT=${APP_PORT}
 
-CMD ["uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "7000"]
+EXPOSE ${APP_PORT}
+
+CMD ["uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "${APP_PORT}"]
