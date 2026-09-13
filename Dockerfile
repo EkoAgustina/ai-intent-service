@@ -20,4 +20,4 @@ ENV APP_PORT=${APP_PORT}
 
 EXPOSE ${APP_PORT}
 
-CMD ["uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "${APP_PORT}"]
+CMD ["uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", ${APP_PORT}]
