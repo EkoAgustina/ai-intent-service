@@ -6,6 +6,9 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import logging
 import time
 from datetime import datetime, UTC
+from hooks import parse_args
+
+args = parse_args()
 
 logger = logging.getLogger("api")
 
@@ -16,8 +19,9 @@ logging.basicConfig(
 )
 
 
-MODEL_DIR = "model/distilbert-banking77"
+MODEL_DIR = args.model_dir
 MAX_LENGTH = 128
+print(f"Model directory: {MODEL_DIR}")
 
 app = FastAPI(
     title="Banking77 Intent Classification API",

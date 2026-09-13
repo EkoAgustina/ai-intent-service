@@ -14,11 +14,17 @@ from transformers import (
     DataCollatorWithPadding
 )
 
+from hooks import parse_args
+
+args = parse_args()
 
 DATA_DIR = "data/processed"
-MODEL_OUTPUT_DIR = "model/distilbert-banking77"
+MODEL_OUTPUT_DIR = args.model_dir
 
-BASE_MODEL = "distilbert-base-uncased"
+print(f"Model output directory: {MODEL_OUTPUT_DIR}")
+print(f"Base model: {args.base_model}")
+
+BASE_MODEL = args.base_model
 MAX_LENGTH = 128
 
 
