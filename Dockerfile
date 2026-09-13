@@ -13,6 +13,7 @@ RUN pip install --no-cache-dir --upgrade pip \
 COPY src ./src
 
 ARG MODEL_DIR
+ENV MODEL_DIR=${MODEL_DIR}
 
 EXPOSE 7000
 
