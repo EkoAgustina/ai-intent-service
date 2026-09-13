@@ -1,31 +1,43 @@
+import os
 import time
 import torch
+import logging
+
+from datetime import datetime, UTC
 from fastapi import FastAPI
 from pydantic import BaseModel
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
-import logging
-import time
-from datetime import datetime, UTC
-from src.hooks import parse_args
 
-args = parse_args()
 
 logger = logging.getLogger("api")
 
-# konfigurasi logger
 logging.basicConfig(
     level=logging.INFO,
     format="%(message)s"
 )
 
 
-MODEL_DIR = args.model_dir
+# ============================================================
+# Model Configuration
+# ============================================================
+
+MODEL_DIR = os.getenv("MODEL_DIR")
+
+if not MODEL_DIR:
+    raise RuntimeError("MODEL_DIR environment variable is not set")
+
 MAX_LENGTH = 128
+
 print(f"Model directory: {MODEL_DIR}")
+
+
+# ============================================================
+# FastAPI
+# ============================================================
 
 app = FastAPI(
     title="Banking77 Intent Classification API",
-    description="DistilBERT-based intent classification service for Banking77 dataset.",
+    description="Transformer-based intent classification service for Banking77 dataset.",
     version="1.0.0"
 )
 
@@ -40,12 +52,22 @@ class PredictionResponse(BaseModel):
     predicted_label_name: str
 
 
+# ============================================================
+# Load Model
+# ============================================================
+
 print("Loading model and tokenizer...")
 
 tokenizer = AutoTokenizer.from_pretrained(MODEL_DIR)
-model = AutoModelForSequenceClassification.from_pretrained(MODEL_DIR)
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model = AutoModelForSequenceClassification.from_pretrained(
+    MODEL_DIR
+)
+
+device = torch.device(
+    "cuda" if torch.cuda.is_available() else "cpu"
+)
+
 model.to(device)
 model.eval()
 
@@ -53,6 +75,11 @@ print(f"Model loaded on device: {device}")
 print(f"Number of threads: {torch.get_num_threads()}")
 print(f"Number of interop threads: {torch.get_num_interop_threads()}")
 print(f"Tokenizer type: {type(tokenizer)}")
+
+
+# ============================================================
+# Request Logging
+# ============================================================
 
 @app.middleware("http")
 async def log_requests(request, call_next):
@@ -84,6 +111,11 @@ async def log_requests(request, call_next):
 
     return response
 
+
+# ============================================================
+# Prediction
+# ============================================================
+
 @app.post("/predict", response_model=PredictionResponse)
 def predict(request: PredictionRequest):
     start_time = time.time()
@@ -96,7 +128,10 @@ def predict(request: PredictionRequest):
         max_length=MAX_LENGTH
     )
 
-    inputs = {key: value.to(device) for key, value in inputs.items()}
+    inputs = {
+        key: value.to(device)
+        for key, value in inputs.items()
+    }
 
     with torch.no_grad():
         outputs = model(**inputs)
@@ -104,7 +139,10 @@ def predict(request: PredictionRequest):
         predicted_label_id = torch.argmax(logits, dim=-1)
 
     predicted_label_id = predicted_label_id.item()
-    predicted_label_name = model.config.id2label[predicted_label_id]
+
+    predicted_label_name = model.config.id2label[
+        predicted_label_id
+    ]
 
     return {
         "input_text": request.text,

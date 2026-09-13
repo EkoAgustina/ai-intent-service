@@ -12,6 +12,12 @@ RUN pip install --no-cache-dir --upgrade pip \
 
 COPY src ./src
 
+ARG MODEL_DIR
+
+COPY ${MODEL_DIR} /app/model
+
+ENV MODEL_DIR=/app/model
+
 EXPOSE 7000
 
 CMD ["uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "7000"]
