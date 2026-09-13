@@ -1,4 +1,3 @@
-```makefile
 # ============================================================
 # Model Configuration
 # ============================================================
@@ -97,11 +96,11 @@ run-albert:
 # Full Deployment
 # ============================================================
 
-deploy-distilbert: build-distilbert docker-build-distilbert run-distilbert
+deploy-distilbert: docker-build-distilbert run-distilbert
 	@echo "==> DistilBERT deployment completed successfully."
 
 
-deploy-albert: build-albert docker-build-albert run-albert
+deploy-albert: docker-build-albert run-albert
 	@echo "==> ALBERT deployment completed successfully."
 
 
@@ -114,4 +113,3 @@ deploy: deploy-distilbert deploy-albert
 docker-build: docker-build-distilbert docker-build-albert
 
 run: run-distilbert run-albert
-```
