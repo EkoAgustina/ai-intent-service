@@ -25,7 +25,7 @@ IMAGE_TAG = latest
 NETWORK_NAME = tunnel
 
 CPU_LIMIT = 2.0
-MEMORY_LIMIT = 2g
+MEMORY_LIMIT = 3g
 
 
 # ============================================================
@@ -73,6 +73,8 @@ run-distilbert:
 		--network $(NETWORK_NAME) \
 		-p $(PORT_DISTILBERT):$(PORT_DISTILBERT) \
 		-e TZ=Asia/Jakarta \
+		-e OMP_NUM_THREADS=2 \
+        -e MKL_NUM_THREADS=2 \
 		-e MODEL_DIR=$(MODEL_DIR_DISTILBERT) \
 		-e APP_PORT=$(PORT_DISTILBERT) \
 		-v "$$(pwd)/model:/app/model" \
@@ -98,6 +100,8 @@ run-albert:
 		--network $(NETWORK_NAME) \
 		-p $(PORT_ALBERT):$(PORT_ALBERT) \
 		-e TZ=Asia/Jakarta \
+		-e OMP_NUM_THREADS=2 \
+        -e MKL_NUM_THREADS=2 \
 		-e MODEL_DIR=$(MODEL_DIR_ALBERT) \
 		-e APP_PORT=$(PORT_ALBERT) \
 		-v "$$(pwd)/model:/app/model" \
