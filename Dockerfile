@@ -4,7 +4,6 @@ WORKDIR /app
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
-
 ENV TZ=Asia/Jakarta
 
 RUN apt-get update \
@@ -20,12 +19,9 @@ RUN pip install --no-cache-dir --upgrade pip \
 
 COPY src ./src
 
-ARG MODEL_DIR
-ENV MODEL_DIR=${MODEL_DIR}
+ENV MODEL_DIR=""
+ENV APP_PORT=8000
 
-ARG APP_PORT
-ENV APP_PORT=${APP_PORT}
-
-EXPOSE ${APP_PORT}
+EXPOSE 8000
 
 CMD ["sh", "-c", "exec uvicorn src.api.main:app --host 0.0.0.0 --port ${APP_PORT}"]

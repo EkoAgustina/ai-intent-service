@@ -14,8 +14,18 @@ MODEL_DIR_ALBERT = model/albert-banking77
 APP_NAME_ALBERT = ai-intent-service-albert
 PORT_ALBERT = 7001
 
-# Docker network
+
+# ============================================================
+# Docker Configuration
+# ============================================================
+
+IMAGE_NAME = ai-intent-service
+IMAGE_TAG = latest
+
 NETWORK_NAME = tunnel
+
+CPU_LIMIT = 2.0
+MEMORY_LIMIT = 2g
 
 
 # ============================================================
@@ -28,6 +38,7 @@ build-distilbert:
 		--base-model $(BASE_MODEL_DISTILBERT) \
 		--model-dir $(MODEL_DIR_DISTILBERT)
 
+
 build-albert:
 	@echo "==> Fine-tuning ALBERT..."
 	python3 src/train_model.py \
@@ -39,25 +50,17 @@ build-albert:
 # Docker Image Build
 # ============================================================
 
-docker-build-distilbert:
-	@echo "==> Building DistilBERT Docker image..."
+docker-build:
+	@echo "==> Building Docker image..."
 	docker build \
-		--build-arg MODEL_DIR=$(MODEL_DIR_DISTILBERT) \
-		--build-arg APP_PORT=$(PORT_DISTILBERT) \
-		-t $(APP_NAME_DISTILBERT) \
+		-t $(IMAGE_NAME):$(IMAGE_TAG) \
 		.
 
-docker-build-albert:
-	@echo "==> Building ALBERT Docker image..."
-	docker build \
-		--build-arg MODEL_DIR=$(MODEL_DIR_ALBERT) \
-		--build-arg APP_PORT=$(PORT_ALBERT) \
-		-t $(APP_NAME_ALBERT) \
-		.
+	@echo "==> Docker image built successfully: $(IMAGE_NAME):$(IMAGE_TAG)"
 
 
 # ============================================================
-# Docker Container Run
+# Docker Container - DistilBERT
 # ============================================================
 
 run-distilbert:
@@ -69,14 +72,20 @@ run-distilbert:
 		--name $(APP_NAME_DISTILBERT) \
 		--network $(NETWORK_NAME) \
 		-p $(PORT_DISTILBERT):$(PORT_DISTILBERT) \
+		-e MODEL_DIR=$(MODEL_DIR_DISTILBERT) \
+		-e APP_PORT=$(PORT_DISTILBERT) \
 		-v "$$(pwd)/model:/app/model" \
-		--cpus="2.0" \
-		--memory="2g" \
-		--memory-swap="2g" \
-		$(APP_NAME_DISTILBERT)
+		--cpus="$(CPU_LIMIT)" \
+		--memory="$(MEMORY_LIMIT)" \
+		--memory-swap="$(MEMORY_LIMIT)" \
+		$(IMAGE_NAME):$(IMAGE_TAG)
 
 	@echo "==> DistilBERT is running on port $(PORT_DISTILBERT)"
 
+
+# ============================================================
+# Docker Container - ALBERT
+# ============================================================
 
 run-albert:
 	@echo "==> Cleaning up old ALBERT container..."
@@ -87,11 +96,13 @@ run-albert:
 		--name $(APP_NAME_ALBERT) \
 		--network $(NETWORK_NAME) \
 		-p $(PORT_ALBERT):$(PORT_ALBERT) \
+		-e MODEL_DIR=$(MODEL_DIR_ALBERT) \
+		-e APP_PORT=$(PORT_ALBERT) \
 		-v "$$(pwd)/model:/app/model" \
-		--cpus="2.0" \
-		--memory="2g" \
-		--memory-swap="2g" \
-		$(APP_NAME_ALBERT)
+		--cpus="$(CPU_LIMIT)" \
+		--memory="$(MEMORY_LIMIT)" \
+		--memory-swap="$(MEMORY_LIMIT)" \
+		$(IMAGE_NAME):$(IMAGE_TAG)
 
 	@echo "==> ALBERT is running on port $(PORT_ALBERT)"
 
@@ -100,20 +111,20 @@ run-albert:
 # Full Deployment
 # ============================================================
 
-deploy-distilbert: docker-build-distilbert run-distilbert
-	@echo "==> DistilBERT deployment completed successfully."
-
-
-deploy-albert: docker-build-albert run-albert
-	@echo "==> ALBERT deployment completed successfully."
+deploy: docker-build run-distilbert run-albert
+	@echo "==> Full deployment completed successfully."
 
 
 # ============================================================
 # Convenience Targets
 # ============================================================
 
-deploy: deploy-distilbert deploy-albert
-
-docker-build: docker-build-distilbert docker-build-albert
+build: docker-build
 
 run: run-distilbert run-albert
+
+deploy-distilbert: docker-build run-distilbert
+	@echo "==> DistilBERT deployment completed successfully."
+
+deploy-albert: docker-build run-albert
+	@echo "==> ALBERT deployment completed successfully."
