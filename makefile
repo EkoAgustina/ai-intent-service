@@ -14,6 +14,13 @@ MODEL_DIR_ALBERT = model/albert-banking77
 APP_NAME_ALBERT = ai-intent-service-albert
 PORT_ALBERT = 7001
 
+# ELECTRA-small
+BASE_MODEL_ELECTRA = google/electra-small-discriminator
+MODEL_DIR_ELECTRA = model/electra-small-banking77
+APP_NAME_ELECTRA = ai-intent-service-electra-small
+PORT_ELECTRA = 7002
+
+
 
 # ============================================================
 # Docker Configuration
@@ -44,6 +51,13 @@ build-albert:
 	python3 src/train_model.py \
 		--base-model $(BASE_MODEL_ALBERT) \
 		--model-dir $(MODEL_DIR_ALBERT)
+
+
+build-electra:
+	@echo "==> Fine-tuning ELECTRA-small..."
+	python3 src/train_model.py \
+		--base-model $(BASE_MODEL_ELECTRA) \
+		--model-dir $(MODEL_DIR_ELECTRA)
 
 
 # ============================================================
@@ -112,12 +126,34 @@ run-albert:
 
 	@echo "==> ALBERT is running on port $(PORT_ALBERT)"
 
+#Docker Container - ELECTRA-small
+run-electra:
+	@echo "==> Cleaning up old ELECTRA-small container..."
+	docker rm -f $(APP_NAME_ELECTRA) 2>/dev/null || true
+
+	@echo "==> Starting ELECTRA-small container..."
+	docker run -d \
+		--name $(APP_NAME_ELECTRA) \
+		--network $(NETWORK_NAME) \
+		-p $(PORT_ELECTRA):$(PORT_ELECTRA) \
+		-e TZ=Asia/Jakarta \
+		-e OMP_NUM_THREADS=2 \
+        -e MKL_NUM_THREADS=2 \
+		-e MODEL_DIR=$(MODEL_DIR_ELECTRA) \
+		-e APP_PORT=$(PORT_ELECTRA) \
+		-v "$$(pwd)/model:/app/model" \
+		--cpus="$(CPU_LIMIT)" \
+		--memory="$(MEMORY_LIMIT)" \
+		--memory-swap="$(MEMORY_LIMIT)" \
+		$(IMAGE_NAME):$(IMAGE_TAG)
+
+	@echo "==> ELECTRA-small is running on port $(PORT_ELECTRA)"
 
 # ============================================================
 # Full Deployment
 # ============================================================
 
-deploy: docker-build run-distilbert run-albert
+deploy: docker-build run-distilbert run-albert run-electra
 	@echo "==> Full deployment completed successfully."
 
 
