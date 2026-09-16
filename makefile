@@ -72,6 +72,7 @@ run-distilbert:
 		--name $(APP_NAME_DISTILBERT) \
 		--network $(NETWORK_NAME) \
 		-p $(PORT_DISTILBERT):$(PORT_DISTILBERT) \
+		-e TZ=Asia/Jakarta \
 		-e MODEL_DIR=$(MODEL_DIR_DISTILBERT) \
 		-e APP_PORT=$(PORT_DISTILBERT) \
 		-v "$$(pwd)/model:/app/model" \
@@ -96,6 +97,7 @@ run-albert:
 		--name $(APP_NAME_ALBERT) \
 		--network $(NETWORK_NAME) \
 		-p $(PORT_ALBERT):$(PORT_ALBERT) \
+		-e TZ=Asia/Jakarta \
 		-e MODEL_DIR=$(MODEL_DIR_ALBERT) \
 		-e APP_PORT=$(PORT_ALBERT) \
 		-v "$$(pwd)/model:/app/model" \
