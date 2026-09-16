@@ -129,6 +129,11 @@ print(f"Number of threads: {torch.get_num_threads()}")
 print(f"Number of interop threads: {torch.get_num_interop_threads()}")
 print(f"Tokenizer type: {type(tokenizer)}")
 
+total_params = sum(p.numel() for p in model.parameters())
+
+print(f"Total parameters : {total_params:,}")
+print(f"Parameters (M)   : {total_params / 1_000_000:.2f}M")
+
 
 # ============================================================
 # Request Logging Middleware
